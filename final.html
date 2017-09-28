@@ -1,0 +1,1823 @@
+<!DOCTYPE html>
+<html>
+ 
+    <head>
+     <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.3.js"></script>
+ 
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+ 
+<style>
+    body { font-size: 62.5%; }
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+    .dropdown{
+position: relative;
+display: inline-block;
+}
+ 
+ 
+ 
+ 
+<style>
+    fieldset {
+      border: 0;
+    }
+    label {
+      display: block;
+      margin: 30px 0 0 0;
+    }
+    select {
+      width: 200px;
+    }
+    .overflow {
+      height: 200px;
+    }
+ 
+ 
+    div.ui-widget #pagee tr td div.hoverDescription { display:none;}
+    div.ui-widget #pagee tr:hover td div.hoverDescription { display:inline-block;}
+  </style>
+ 
+ 
+<script >
+ 
+ 
+    var all_tasks_counter =0 ;
+ 
+var in_progress_counter =0;
+var completed_counter =0;
+var arch_counter =0;
+ 
+ $(document).ready(function(){
+			$.ajax({
+				url: '/datain',
+				data: {},
+				type: 'POST',
+				success: function (data) {
+				
+					all = data.alltasks;
+					arch = data.archtask;
+					completed = data.comptask;
+					progress = data.progtask;
+					all_tasks_counter = all.length;
+					in_progress_counter = progress.length;
+					completed_counter = completed.length;
+					arch_counter = arch.length;
+					drawall();
+				},
+				error: function (xhr, status, error) {
+					if(error.message!= undefined) {
+					alert(console.log('Error: ' + error.message));}
+				},
+			});
+		});
+		
+function save() {
+	$.ajax({
+        url: '/dataout',
+        data: {alltasks : JSON.stringify(all, null, 4),progtask : JSON.stringify(progress, null, 4),comptask : JSON.stringify(completed, null, 4),archtask : JSON.stringify(arch, null, 4)},
+        type: 'POST',
+        success: function (data) {
+        },
+        error: function (xhr, status, error) {
+			if(error.message!= undefined) {
+            alert(console.log('Error: ' + error.message));}
+        },
+    });
+}
+function newtask(id,name,date,description,status)
+{
+        this.id = id ;
+        this.name=name;
+        this.date =date;
+        this.description = description ;
+        this.status = status;
+}
+ 
+    var all=[];
+    var arch=[];
+    var completed=[];
+    var progress=[];
+ 
+var trrry,trrry1,trrry2;
+ 
+  function edit(){
+ 
+ 
+         trrry=document.getElementById('task2').value;
+         trrry1=document.getElementById('datepicker2').value;
+        trrry2=document.getElementById('description2').value;
+ 
+ if(trrry == "" )
+    alert('Please enter a valid Task Name');
+    else if (trrry1 == "")
+        alert('Please enter a valid Date');
+        else if (trrry2 == "")
+                alert('Please enter a valid Description');
+
+
+ else {
+   var counter=0 , bool = 1;
+    for(counter=0 ; counter <all_tasks_counter;counter++)
+    {
+      if(all[counter].name == trrry)
+      {
+                alert('Task already exist , please enter another one');
+                        document.getElementById('task').value="";
+                        bool=-1;
+      }
+      
+        
+    }
+    if(bool==1)
+{
+
+        document.getElementById('task2').value="";
+         document.getElementById('datepicker2').value="";
+        document.getElementById('description2').value="";
+ 
+ 
+        hide2();
+        if(page_status == "completed")
+          editcompleted2();
+ 
+          if(page_status == "progress")
+          editprogress2();
+ 
+        if(page_status == "archived")
+          editarch2();
+ 
+        if(page_status == "all")
+          editall2();
+        }
+ }
+}
+ 
+function editall2(){
+         
+        if(all[z].status=="progress"){
+         
+ 
+        var count;
+        for(count=0 ; count <in_progress_counter; count++)
+        {
+         
+        if(progress[count].name==all[z].name){
+         
+           progress[count].name=trrry;
+            progress[count].date=trrry1;
+          progress[count].description=trrry2;
+        count=1000;
+ 
+ 
+        }
+ 
+        }
+ 
+ 
+        all[z].name=trrry;
+              all[z].date=trrry1;
+              all[z].description=trrry2;
+ 
+        drawprogress();
+        drawall();
+		save();
+        }
+ 
+ 
+        if(all[z].status=="arch"){
+         
+ 
+          var count;
+        for(count=0 ; count <arch_counter; count++)
+        {
+         
+        if(arch[count].name==all[z].name){
+         
+           arch[count].name=trrry;
+            arch[count].date=trrry1;
+          arch[count].description=trrry2;
+ 
+        count=1000;
+        }
+ 
+        }
+ 
+        all[z].name=trrry;
+              all[z].date=trrry1;
+              all[z].description=trrry2;
+          drawarch();
+          drawall();
+		  save();
+        }
+ 
+ 
+ 
+        if(all[z].status=="completed"){
+         
+        var count;
+        for(count=0 ; count <completed_counter; count++)
+        {
+         
+        if(completed[count].name==all[z].name){
+         
+           completed[count].name=trrry;
+            completed[count].date=trrry1;
+          completed[count].description=trrry2;
+ 
+        count=1000;
+        }
+ 
+        }
+         
+        all[z].name=trrry;
+              all[z].date=trrry1;
+              all[z].description=trrry2;
+          drawcompleted();
+          drawall();
+		  save();
+        }
+ 
+ 
+        }
+ 
+        function editarch2(){
+         
+                  var count;
+                  for(count=0 ; count < all_tasks_counter ; count ++)
+                  {
+                    if(arch[z].name==all[count].name)
+                    {
+                      all[count].name=trrry;
+                      all[count].date=trrry1;
+                      all[count].description=trrry2;
+                      count=1000;
+ 
+                    }
+ 
+                  }
+ 
+                  arch[z].name=trrry;
+                    arch[z].date=trrry1;
+                  arch[z].description=trrry2;
+                drawall();
+                drawarch();
+ save();
+ 
+}
+ 
+ 
+ 
+ 
+function editprogress2(){
+ 
+          var count;
+          for(count=0 ; count < all_tasks_counter ; count ++)
+          {
+            if(progress[z].name==all[count].name)
+            {
+              all[count].name=trrry;
+              all[count].date=trrry1;
+              all[count].description=trrry2;
+        count=1000;
+ 
+            }
+ 
+          }
+ 
+ 
+ 
+          progress[z].name=trrry;
+            progress[z].date=trrry1;
+          progress[z].description=trrry2;
+        drawall();
+        drawprogress();
+		save();
+ 
+ 
+}
+ 
+ 
+ 
+function editcompleted2(){
+ 
+          var count;
+          for(count=0 ; count < all_tasks_counter ; count ++)
+          {
+            if(completed[z].name==all[count].name)
+            {
+              all[count].name=trrry;
+              all[count].date=trrry1;
+              all[count].description=trrry2;
+        count=1000;
+ 
+            }
+ 
+          }
+ 
+ 
+ 
+          completed[z].name=trrry;
+            completed[z].date=trrry1;
+          completed[z].description=trrry2;
+        drawall();
+        drawcompleted();
+		save();
+ 
+ 
+}
+ 
+var z ;
+function editcompleted(i){
+    z = i;
+
+    show2();
+}
+function editprogress(i){
+    z = i;
+    show2();
+}
+function editarch(i){
+    z = i;
+    show2();
+}
+function edit1(i){
+    z = i;
+    show2();
+}
+function edit2(i){
+    z = i;
+    show2();
+}
+function edit3(i){
+    z = i;
+    show2();
+}
+ 
+ 
+ 
+ 
+function show(){
+       hide2();
+
+      document.getElementById("dialog").style.display = 'block'}
+function show2(){
+       hide();
+      if(page_status == "completed")
+         {
+           document.getElementById('task2').value=completed[z].name;
+         document.getElementById('datepicker2').value=completed[z].date;
+        document.getElementById('description2').value=completed[z].description;
+
+         }
+ 
+         else if(page_status == "progress")
+          {
+           document.getElementById('task2').value=progress[z].name;
+         document.getElementById('datepicker2').value=progress[z].date;
+        document.getElementById('description2').value=progress[z].description;
+
+         }
+ 
+        else if(page_status == "archived")
+          {
+           document.getElementById('task2').value=archived[z].name;
+         document.getElementById('datepicker2').value=archived[z].date;
+        document.getElementById('description2').value=archived[z].description;
+
+         }
+ 
+     else if(page_status == "all")
+               {
+           document.getElementById('task2').value=all[z].name;
+         document.getElementById('datepicker2').value=all[z].date;
+        document.getElementById('description2').value=all[z].description;
+
+         }
+          
+           document.getElementById("dialog2").style.display = 'block'}
+ 
+ 
+function hide(){
+   
+      document.getElementById("dialog").style.display = 'none'}
+function hide2(){
+   
+      document.getElementById("dialog2").style.display = 'none'}
+ 
+function add()
+{ 
+            var trry=document.getElementById('task').value;
+         var trry1=document.getElementById('datepicker').value;
+        var trry2=document.getElementById('description').value;
+ 
+        
+    if(trry == "" )
+    alert('Please enter a valid Task Name');
+    else if (trry1 == "")
+        alert('Please enter a valid Date');
+        else if (trry2 == "")
+                alert('Please enter a valid Description');
+
+
+ else {
+  var counter=0 , bool = 1;
+    for(counter=0 ; counter <all_tasks_counter;counter++)
+    {
+      if(all[counter].name == trry)
+      {
+                alert('Task already exist , please enter another one');
+                        document.getElementById('task').value="";
+                        bool=-1;
+      }
+      
+        
+    }
+    if(bool==1)
+       { document.getElementById('task').value="";
+         document.getElementById('datepicker').value="";
+        document.getElementById('description').value="";
+        var status = "progress" ;
+            var task = new newtask(all_tasks_counter,trry,trry1,trry2,status);
+         
+        all_tasks_counter ++;
+            in_progress_counter++ ;
+             all.push(task);
+             progress.push(task);
+             hide();
+             drawall();
+}
+  
+           }
+            save(); 
+}
+ 
+var page_status ;
+ 
+var i;
+ 
+function AlltoP(i){
+ 
+         
+        if(all[i].status=="completed")
+        {
+           progress.push(all[i]);
+        progress[in_progress_counter].status="progress";
+ 
+        var count;
+        for(count=0;count<completed_counter;count++)
+        {
+          if(all[i].name==completed[count].name)
+             {
+           
+              completed.splice(count,1);
+ 
+              completed_counter-- ;  
+        count=1000;
+ 
+              }
+            }
+        all[i].status="progress";
+        in_progress_counter ++ ;
+         
+         drawcompleted();
+		 save();
+        }
+        if(all[i].status=="arch")
+        {
+         
+        progress.push(all[i]);
+        progress[in_progress_counter].status="progress";
+ 
+        var count;
+        for(count=0;count<arch_counter;count++)
+        {
+          if(all[i].name==arch[count].name)
+             {
+           
+              arch.splice(count,1);
+ 
+              arch_counter-- ;  
+              count=1000;
+ 
+ 
+              }
+            }
+        all[i].status="progress";
+        in_progress_counter ++
+ 
+         drawarch();
+		 save();
+        }
+         
+        drawprogress();
+        drawall();
+		save();
+         
+ 
+}
+ 
+function AlltoC(i){
+ 
+ 
+        if(all[i].status=="progress")
+        {
+         
+        completed.push(all[i]);
+        completed[completed_counter].status="completed";
+ 
+        var count;
+        for(count=0;count<in_progress_counter;count++)
+        {
+          if(all[i].name==progress[count].name)
+             {
+           
+              progress.splice(count,1);
+ 
+              in_progress_counter-- ;  
+        count=1000;
+ 
+              }
+            }
+        all[i].status="completed";
+        completed_counter ++ ;
+ 
+        drawcompleted();
+        drawprogress();
+		save();
+        }
+ 
+ 
+        if(all[i].status=="arch")
+        {
+         
+         completed.push(all[i]);
+        completed[completed_counter].status="completed";
+ 
+        var count;
+        for(count=0;count<arch_counter;count++)
+        {
+          if(all[i].name==arch[count].name)
+             {
+           
+              arch.splice(count,1);
+ 
+              arch_counter-- ;  
+        count=1000;
+ 
+              }
+            }
+        all[i].status="completed";
+        completed_counter ++ ;
+         
+        drawcompleted();
+         drawarch();
+         save();
+        }
+         drawall();
+ save();
+}
+ 
+function AlltoA(i){
+ 
+ 
+        if(all[i].status=="progress")
+        {
+          arch.push(all[i]);
+        arch[arch_counter].status="arch";
+ 
+        var count;
+        for(count=0;count<in_progress_counter;count++)
+        {
+          if(all[i].name==progress[count].name)
+             {
+           
+              progress.splice(count,1);
+ 
+              in_progress_counter-- ;  
+        count=1000;
+ 
+              }
+            }
+        all[i].status="arch";
+        arch_counter ++ ;
+         
+        drawarch();
+         drawprogress();
+         save();
+        }
+        if(all[i].status=="completed")
+        {
+          arch.push(all[i]);
+        arch[arch_counter].status="arch";
+ 
+        var count;
+        for(count=0;count<completed_counter;count++)
+        {
+          if(all[i].name==completed[count].name)
+             {
+           
+              completed.splice(count,1);
+ 
+              completed_counter-- ;  
+        count=1000;
+ 
+              }
+            }
+        all[i].status="arch";
+        arch_counter ++ ;
+         
+ 
+         drawcompleted();
+         drawarch();
+		 save();
+        }
+         
+        drawall();save();
+}
+ 
+ 
+function sortbyname() {
+   
+            if (page_status == "all")
+          {all.sort(function(a, b){
+            if(a.name < b.name) return -1;
+            if(a.name > b.name) return 1;
+            return 0;}) }
+        if (page_status == "all") {
+          drawall();save();}
+        else if (page_status == "progress")
+         { progress.sort(function(a, b){
+ 
+          if(a.name < b.name) return -1;
+          if(a.name > b.name) return 1;
+            return 0;})
+        }
+        if (page_status == "progress") {
+          drawprogress();save();}
+        else if (page_status == "completed")
+        {
+               completed.sort(function(a, b){
+ 
+           if(a.name < b.name) return -1;
+           if(a.name > b.name) return 1;
+            return 0;})
+        }
+        if (page_status == "completed") {
+          drawcompleted();save();}
+                 else if (page_status == "archived")
+              { arch.sort(function(a, b){
+ 
+            if(a.name < b.name) return -1;
+            if(a.name > b.name) return 1;
+            return 0;
+ 
+        })
+        }
+        if (page_status == "archived") {
+          drawarch();save();}
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  function sortbydate() {
+ 
+            if (page_status == "all")
+          {all.sort(function(a, b){
+            if(a.date < b.date) return -1;
+            if(a.date > b.date) return 1;
+            return 0;})
+        }
+            if (page_status == "all") {
+ 
+        drawall();save();}
+ 
+        else if (page_status == "progress")
+         { progress.sort(function(a, b){
+ 
+          if(a.date < b.date) return -1;
+          if(a.date > b.date) return 1;
+            return 0;})
+ 
+        }
+        if (page_status == "progress"){
+        drawprogress();save();}
+        else if (page_status == "completed")
+        {
+               completed.sort(function(a, b){
+ 
+           if(a.date < b.date) return -1;
+           if(a.date > b.date) return 1;
+            return 0;})
+               
+        }if (page_status == "completed"){
+        drawcompleted();save();}
+ 
+ 
+                 else if (page_status == "archived")
+              { arch.sort(function(a, b){
+ 
+            if(a.date < b.date) return -1;
+            if(a.date > b.date) return 1;
+            return 0;
+ 
+        })
+           
+        }if (page_status == "archived"){
+           drawarch();save();}
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ function deletefromall(i){
+   
+          if(all[i].status=="progress")
+          {var count ;
+          for(count=0 ; count < in_progress_counter ; count++)  
+          {
+            if(progress[count].name==all[i].name )
+            {
+             
+              progress.splice(count,1);
+ 
+              in_progress_counter--;
+              count=1000;
+ 
+            }
+ 
+          }
+ 
+          drawprogress();save();
+          }
+          else if(all[i].status=="completed")
+          {
+            var count ;
+          for(count=0 ; count < completed_counter ; count++)  
+          {
+            if(completed[count].name==all[i].name )
+            {
+             
+              completed.splice(count,1);
+ 
+              completed_counter--;
+              count=1000;
+ 
+            }
+ 
+          }
+           
+ 
+ 
+          drawcompleted();save();
+          }
+ 
+          else if (all[i].status=="arch")
+          {
+           
+          var count ;
+          for(count=0 ; count < arch_counter ; count++)  
+          {
+            if(arch[count].name==all[i].name )
+            {
+             
+              arch.splice(count,1);
+ 
+              arch_counter--;
+              count=1000;
+ 
+            }
+ 
+          }
+ 
+          drawarch();save();
+          }
+ 
+ 
+          all.splice(i,1);
+          all_tasks_counter--;
+          drawall();save();
+ 
+ }
+ 
+ 
+ 
+ 
+function CtoP (i)
+{
+    progress.push(completed[i]);
+    progress[in_progress_counter].status="progress";
+ 
+ 
+     completed.splice(i,1)
+       completed_counter -- ;
+ 
+    for(i=0;i<all_tasks_counter;i++)
+    {
+      if(all[i].name==progress[in_progress_counter].name)
+      {
+       
+        all[i].status="progress";
+      }
+ 
+    }
+      in_progress_counter ++ ;
+ 
+     drawprogress();
+    drawcompleted();
+ save();
+}
+ 
+ 
+ 
+ 
+ 
+function CtoA (i)
+{
+    arch.push(completed[i]);
+    arch[arch_counter].status="arch";
+ 
+    completed.splice(i,1);
+ 
+    completed_counter-- ;
+    for(i=0;i<all_tasks_counter;i++)
+    {
+      if(all[i].name==arch[arch_counter].name)
+      {
+       
+        all[i].status="arch";
+      }
+ 
+    }
+ 
+ 
+    arch_counter ++ ;
+ 
+     drawarch();
+    drawcompleted();save();
+ 
+}
+ 
+ 
+ 
+ 
+ 
+function PtoC (i)
+{
+    completed.push(progress[i]);
+    completed[completed_counter].status="completed";
+    progress.splice(i,1);
+ 
+    in_progress_counter-- ;
+ 
+    for(i=0;i<all_tasks_counter;i++)
+    {
+      if(all[i].name==completed[completed_counter].name)
+      {
+       
+        all[i].status="completed";
+      }
+ 
+    }
+    completed_counter ++ ;
+ 
+    drawcompleted();
+    drawprogress();save();
+ 
+}
+ 
+function PtoA (i)
+{
+    arch.push(progress[i]);
+    arch[arch_counter].status="arch";
+    progress.splice(i,1);
+    in_progress_counter-- ;
+    for(i=0;i<all_tasks_counter;i++)
+    {
+      if(all[i].name==arch[arch_counter].name)
+      {
+       
+        all[i].status="arch";
+      }
+ 
+    }
+ 
+    arch_counter++ ;
+    drawarch();save();
+    drawprogress();
+}
+ 
+ function deletearch(i){
+         var count;
+         for(count=0;count<all_tasks_counter;count++)
+      {
+        if(all[count].name==arch[i].name)
+        {
+         
+          all.splice(count,1);
+          all_tasks_counter--;
+          count=1000;
+ 
+        }
+ 
+      }
+ 
+         arch.splice(i,1);
+         arch_counter--;
+ 
+ 
+      drawall();
+      drawarch();save();
+ 
+ }
+ function deletecompleted(i){
+   
+           var count;
+         for(count=0;count<all_tasks_counter;count++)
+      {
+        if(all[count].name==completed[i].name)
+        {
+         
+          all.splice(count,1);
+          all_tasks_counter--;
+          count=1000;
+ 
+        }
+ 
+      }
+ 
+ 
+         completed.splice(i,1);
+         completed_counter--;
+         drawall();
+      drawcompleted();save();
+ }
+ function deleteprogress(i){
+   
+           var count;
+         for(count=0;count<all_tasks_counter;count++)
+      {
+        if(all[count].name==all[i].name)
+        {
+         
+          all.splice(count,1);
+          all_tasks_counter--;
+          count=1000;
+ 
+         }
+ 
+        }
+ 
+ 
+      progress.splice(i,1);
+      in_progress_counter--;
+      drawall();
+      drawprogress();save();
+ }
+ 
+ 
+ 
+ 
+ 
+ 
+function AtoP (i)
+{
+      progress.push(arch[i]);
+      progress[in_progress_counter].status="progress";
+ 
+ 
+ 
+      arch.splice(i,1);
+      arch_counter-- ;
+ 
+      for(i=0;i<all_tasks_counter;i++)
+      {
+        if(all[i].name==progress[in_progress_counter].name)
+        {
+         
+          all[i].status="progress";
+        }
+ 
+      }
+ 
+       
+      in_progress_counter++ ;
+      drawprogress();
+      drawarch();save();
+}
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+function AtoC (i)
+{
+      completed.push(arch[i]);
+      completed[completed_counter].status="completed";
+ 
+      // var count ;
+      arch.splice(i,1);
+      arch_counter-- ;
+       
+      for(i=0;i<all_tasks_counter;i++)
+      {
+        if(all[i].name==completed[completed_counter].name)
+        {
+         
+          all[i].status="completed";
+        }
+ 
+      }
+ 
+      completed_counter++ ;
+      drawcompleted();
+      drawarch();save();
+}
+ 
+ 
+function drawall()
+{ page_status = "all";
+  if(all_tasks_counter == 0 )
+     {
+         var text = "<tr>";
+        text += "<td></td>";
+        text += "<td>" + "NO TASKS" + "</td>";
+                text += "<td></td>";
+        text += "<td></td>";
+ 
+             text += "<td></td>";
+            text += "</tr>";        
+        document.getElementById("pagee").innerHTML = text;
+        }
+        else{
+            var text ="<table>";
+        for(i = 0; i< all_tasks_counter; i++){
+ 
+          if(all[i].status == "completed")
+ 
+        {text += "<tr>";
+        text += "<td><input type=\"checkbox\" onclick=\"deleteallAll("+i+")\"/></td>";
+        text += "<td>" + (i+1) + "</td>";
+       
+           text += "<td><strike>"+all[i].name+"</strike></td>";
+           text += "<td>"+all[i].date + "</td>";
+           text += "<td><button onclick = \"edit1("+i+")\">Edit Task</button><button onclick = \"deletefromall("+i+")\">Delete Task</button><button onclick = \"AlltoA("+i+")\">Archive Task</button><button onclick = \"AlltoP("+i+")\">Progress</button></td>";
+                     text += "<td><div class =\"hoverDescription\"> "+all[i].description+"</div></td>";
+ 
+           text += "</tr>";}
+ 
+ 
+           else if(all[i].status == "arch") {
+             text += "<tr>";
+        text += "<td><input type=\"checkbox\" onclick=\"deleteallAll("+i+")\"/></td>";
+        text += "<td>" + (i+1) + "</td>";
+       
+           text += "<td> "+all[i].name+"</td>";
+           text += "<td>"+all[i].date + "</td>";
+           text += "<td><button onclick = \"edit2("+i+")\">Edit Task</button><button onclick = \"deletefromall("+i+")\">Delete Task</button><button onclick = \"AlltoP("+i+")\">Progress Task</button><button onclick = \"AlltoC("+i+")\">Mark As Completed</button></td>";
+                     text += "<td><div class =\"hoverDescription\"> "+all[i].description+"</div></td>";
+ 
+           text += "</tr>";
+           }
+ 
+ 
+           else if (all[i].status == "progress")
+           {
+             text += "<tr>";
+        text += "<td><input type=\"checkbox\" onclick=\"deleteallAll("+i+")\"/></td>";
+        text += "<td>" + (i+1) + "</td>";
+       
+           text += "<td> "+all[i].name+"</td>";
+           text += "<td>"+all[i].date + "</td>";
+           text += "<td><button onclick = \"edit3("+i+")\">Edit Task</button><button onclick = \"deletefromall("+i+")\">Delete Task</button><button onclick = \"AlltoA("+i+")\">Archive Task</button><button onclick = \"AlltoC("+i+")\">Mark As Completed</button></td>";
+                     text += "<td><div class =\"hoverDescription\"> "+all[i].description+"</div></td>";
+ 
+           text += "</tr>";
+ 
+ 
+ 
+           }
+ 
+ 
+ 
+               
+             }    
+            text +="</table>";
+ 
+           
+}
+ 
+ document.getElementById("pagee").innerHTML = text;
+            document.getElementById("allnumber").innerHTML = all_tasks_counter;
+                        document.getElementById("progressnumber").innerHTML = in_progress_counter;
+            document.getElementById("completednumber").innerHTML = completed_counter;
+            document.getElementById("archnumber").innerHTML = arch_counter;
+ 
+ 
+ 
+}
+
+function deleting(){
+  
+
+if(page_status=="progress")
+{  
+
+  deleteallprogress2();
+  
+// hidedelete();
+}
+if(page_status=="completed"){
+  deleteallcompleted2();
+  // hidedelete();
+
+}
+if(page_status=="archived"){
+  deleteallarch2();
+// hidedelete();
+
+}
+if(page_status=="all"){
+    
+progressdeleteallAll2();
+completeddeleteallAll2();
+archdeleteallAll2();
+}
+
+
+
+}
+
+function showdelete()
+{       document.getElementById("Deleteall").style.display = 'block';
+}
+function hidedelete()
+{       document.getElementById("Deleteall").style.display = 'none';}
+
+var completedDeleteArray =[];
+var archDeleteArray=[];
+var progressDeleteArray=[];
+var progressallDeleteArray=[];
+var completedallDeleteArray=[];
+var archallDeleteArray=[];
+function deleteallAll(i){
+  
+
+if(all[i].status=="progress"){
+  
+progressallDeleteArray.push(all[i].name);
+  showdelete();
+
+}
+if(all[i].status=="completed")
+{
+  completedallDeleteArray.push(all[i].name);
+  showdelete();
+
+}
+if(all[i].status=="arch"){
+  
+archallDeleteArray.push(all[i].name);
+  showdelete();
+}
+
+
+}
+
+
+function deleteallcompleted(i){
+  
+  completedDeleteArray.push(completed[i].name);
+  showdelete();
+
+}
+function deleteallarch(i){
+  
+
+archDeleteArray.push(arch[i].name);
+  showdelete();
+
+
+}
+function deleteallprogress(i){
+progressDeleteArray.push(progress[i].name);
+  showdelete();
+
+}
+
+function progressdeleteallAll2(){
+  
+
+ var count,count2;
+ 
+
+
+
+var count4=0 ;
+for(count=0 ; count<all_tasks_counter;)
+{  var flag=0;
+   for(count2=0 ; count2< progressallDeleteArray.length ; count2++)
+   {  
+     if(progressallDeleteArray[count2]==all[count].name && count4<progressallDeleteArray.length &&flag==0)
+     {
+
+
+    var count3;
+         for(count3=0;count3<in_progress_counter;count3++)
+      {
+        if((progress[count3].name==all[count].name) )
+        {
+          progress.splice(count3,1);
+          in_progress_counter--;
+          count3=1000;
+         }
+ drawprogress();
+      drawall();save();
+        }
+      all.splice(count,1);
+      all_tasks_counter--;
+                count4++
+                flag=1;
+                      drawall();save();
+
+   }
+   
+}
+
+if(flag==0)
+count++;
+
+      drawprogress();
+      drawall();save();
+
+}
+if(count4==progressallDeleteArray.length-1)
+progressallDeleteArray=[];
+
+}
+
+function completeddeleteallAll2(){
+  
+var count,count2;
+ 
+
+
+
+var count4=0 ;
+for(count=0 ; count<all_tasks_counter;)
+{  var flag=0;
+   for(count2=0 ; count2< completedallDeleteArray.length ; count2++)
+   {  
+     if(completedallDeleteArray[count2]==all[count].name && count4<completedallDeleteArray.length &&flag==0)
+     {
+
+
+    var count3;
+         for(count3=0;count3<completed_counter;count3++)
+      {
+        if((completed[count3].name==all[count].name) )
+        {
+          completed.splice(count3,1);
+          completed_counter--;
+          count3=1000;
+         }
+         drawcompleted();
+      drawall();
+ save();
+        }
+      all.splice(count,1);
+      all_tasks_counter--;
+                count4++
+                flag=1;
+                      drawall();save();
+
+   }
+   
+}
+
+if(flag==0)
+count++;
+
+
+      drawcompleted();
+      drawall();save();
+}
+if(count4==completedallDeleteArray.length-1)
+completedallDeleteArray=[];
+
+}
+
+function archdeleteallAll2(){
+  
+var count,count2;
+ 
+
+
+
+var count4=0 ;
+for(count=0 ; count<all_tasks_counter;)
+{  var flag=0;
+   for(count2=0 ; count2< archallDeleteArray.length ; count2++)
+   {  
+     if(archallDeleteArray[count2]==all[count].name && count4<archallDeleteArray.length &&flag==0)
+     {
+
+
+    var count3;
+         for(count3=0;count3<arch_counter;count3++)
+      {
+        if((arch[count3].name==all[count].name) )
+        {
+          arch.splice(count3,1);
+          arch_counter--;
+          count3=1000;
+
+         }
+         drawarch();
+      drawall();save();
+ 
+        }
+      all.splice(count,1);
+      all_tasks_counter--;
+                count4++
+                flag=1;      drawall();save();
+
+   }
+   
+}
+
+if(flag==0)
+count++;
+
+      drawarch();
+      drawall();save();
+
+}
+if(count4==archallDeleteArray.length-1)
+archallDeleteArray=[];
+
+}
+
+
+
+
+function deleteallarch2(){
+   
+  var count,count2;
+ 
+
+var count4=0 ;
+for(count=0 ; count<arch_counter;)
+{  var flag=0;
+   for(count2=0 ; count2< archDeleteArray.length ; count2++)
+   {  
+     if(archDeleteArray[count2]==arch[count].name && count4<archDeleteArray.length &&flag==0)
+     {
+
+
+    var count3;
+         for(count3=0;count3<all_tasks_counter;count3++)
+      {
+        if((all[count3].name==arch[count].name) )
+        {
+          all.splice(count3,1);
+          all_tasks_counter--;
+          count3=1000;
+                drawall();save();
+
+         }
+ 
+        }
+      arch.splice(count,1);
+      arch_counter--;
+                count4++
+                flag=1;
+   }
+   
+}
+
+if(flag==0)
+count++;
+      drawall();
+
+      drawarch();save();
+
+}
+if(count4==archDeleteArray.length-1)
+archDeleteArray=[];
+
+
+}
+
+
+function deleteallcompleted2(){
+  
+  var count,count2;
+ 
+
+var count4=0 ;
+for(count=0 ; count<completed_counter;)
+{  var flag=0;
+   for(count2=0 ; count2< completedDeleteArray.length ; count2++)
+   {  
+     if(completedDeleteArray[count2]==completed[count].name && count4<completedDeleteArray.length &&flag==0)
+     {
+
+
+    var count3;
+         for(count3=0;count3<all_tasks_counter;count3++)
+      {
+        if((all[count3].name==completed[count].name) )
+        {
+          all.splice(count3,1);
+          all_tasks_counter--;
+          count3=1000;
+                drawall();save();
+
+         }
+ 
+        }
+      completed.splice(count,1);
+      completed_counter--;
+                count4++
+                flag=1;
+   }
+   
+}
+
+if(flag==0)
+count++;
+      drawall();
+
+      drawcompleted();save();
+
+}
+if(count4==completedDeleteArray.length-1)
+completedDeleteArray=[];
+
+
+
+}
+
+function deleteallprogress2(){
+  var count,count2;
+ 
+
+var count4=0 ;
+for(count=0 ; count<in_progress_counter;)
+{  var flag=0;
+   for(count2=0 ; count2< progressDeleteArray.length ; count2++)
+   {  
+     if(progressDeleteArray[count2]==progress[count].name && count4<progressDeleteArray.length &&flag==0)
+     {
+
+
+    var count3;
+         for(count3=0;count3<all_tasks_counter;count3++)
+      {
+        if((all[count3].name==progress[count].name) )
+        {
+          all.splice(count3,1);
+          all_tasks_counter--;
+          count3=1000;
+         }
+ 
+        }
+      progress.splice(count,1);
+      in_progress_counter--;
+                count4++
+                flag=1;
+   }
+   
+}
+
+if(flag==0)
+count++;
+      drawall();
+
+      drawprogress();save();
+
+}
+if(count4==progressDeleteArray.length-1)
+progressDeleteArray=[];
+
+}
+
+
+
+ 
+function drawcompleted(){
+ 
+  page_status = "completed";
+    if(completed_counter == 0 )
+        {
+            var text = "<tr>";
+        text += "<td></td>";
+        text += "<td>" + "NO TASKS" + "</td>";
+                text += "<td></td>";
+        text += "<td></td>";
+ 
+             text += "<td></td>";
+            text += "</tr>";        
+        document.getElementById("pagee").innerHTML = text;
+        }
+        else{  
+   
+       
+                 var text ="<table>";
+        for(i = 0; i< completed_counter; i++){
+      text += "<tr>";
+        text += "<td> <input type=\"checkbox\" id=\"checkk\" onclick=\"deleteallcompleted("+i+")\"/></td>";
+        text += "<td>" + (i+1)  + "</td>";
+            text += "<td>"+completed[i].name + "</td>";
+            text += "<td>"+completed[i].date + "</td>";
+           text += "<td><button onclick = \"editcompleted("+i+")\">Edit Task </button><button onclick = \"deletecompleted("+i+")\">Delete Task</button><button onclick = \"CtoA("+i+")\">Archive Task</button><button onclick =\"CtoP("+i+")\">In Progress</button></td>";
+               text += "<td><div class =\"hoverDescription\" >"+completed[i].description+"</div></td>";
+ 
+            text += "</tr>";      }
+                                    text +="</table>";
+                                     
+}
+ 
+ document.getElementById("pagee").innerHTML = text;
+                                      document.getElementById("allnumber").innerHTML = all_tasks_counter;
+                        document.getElementById("progressnumber").innerHTML = in_progress_counter;
+            document.getElementById("completednumber").innerHTML = completed_counter;
+            document.getElementById("archnumber").innerHTML = arch_counter;
+ 
+ 
+ 
+ 
+ 
+ 
+}
+ 
+ 
+function drawarch()
+{page_status = "archived"  ;
+ 
+ if(arch_counter == 0 )
+    {
+        var text = "<tr>";
+        text += "<td></td>";
+        text += "<td>" + "NO TASKS" + "</td>";
+                text += "<td></td>";
+        text += "<td></td>";
+ 
+             text += "<td></td>";
+            text += "</tr>";        
+        document.getElementById("pagee").innerHTML = text;
+        }
+        else{
+                        var text ="<table>";
+ 
+        for(i = 0; i< arch_counter; i++){
+ text += "<tr>";
+        text += "<td><input type=\"checkbox\" onclick=\"deleteallarch("+i+")\"></td>";
+        text += "<td>" + (i+1)  + "</td>";
+       
+            text += "<td>"+arch[i].name + "</td>";
+            text += "<td>"+arch[i].date + "</td>";
+           text += "<td><button onclick = \"editarch("+i+")\">Edit Task</button><button onclick = \"deletearch("+i+")\">Delete Task</button><button onclick = \"AtoC("+i+")\">Mark As Completed</button><button onclick = \"AtoP("+i+")\">In Progress</button></td>";
+          text += "<td><div class =\"hoverDescription\"> "+arch[i].description+"</div></td>";
+            text += "</tr>"; }
+                        text +="</table>";
+                           
+ 
+}
+ 
+   document.getElementById("pagee").innerHTML = text;
+                              document.getElementById("allnumber").innerHTML = all_tasks_counter;
+                        document.getElementById("progressnumber").innerHTML = in_progress_counter;
+            document.getElementById("completednumber").innerHTML = completed_counter;
+            document.getElementById("archnumber").innerHTML = arch_counter;
+ 
+ 
+ 
+}
+function drawprogress()
+{
+page_status = "progress";
+  if(in_progress_counter == 0 )
+        {
+            var text = "<tr>";
+        text += "<td></td>";
+        text += "<td>" + "NO TASKS" + "</td>";
+                text += "<td></td>";
+        text += "<td></td>";
+ 
+             text += "<td></td>";
+            text += "</tr>";        
+        document.getElementById("pagee").innerHTML = text;
+        }
+        else{
+            var text ="<table>";
+ 
+       for(i = 0; i< in_progress_counter; i++){
+          text += "<tr>";
+        text += "<td><input type=\"checkbox\" onclick=\"deleteallprogress("+i+")\"></td>";
+        text += "<td>" + (i+1) + "</td>";
+       
+            text += "<td>"+progress[i].name + "</td>";
+            text += "<td>"+progress[i].date + "</td>";
+           text += "<td><button onclick = \"editprogress("+i+")\">Edit Task</button><button onclick = \"deleteprogress("+i+")\">Delete Task</button><button onclick = \"PtoA("+i+")\">Archive Task</button><button onclick = \"PtoC("+i+")\">Mark As Completed</button></td>";
+                      text += "<td><div class =\"hoverDescription\" >"+progress[i].description+"</div></td>";
+ 
+            text += "</tr>";        }
+            text +="</table>";
+ 
+         
+}
+
+ 
+   document.getElementById("pagee").innerHTML = text;
+            document.getElementById("allnumber").innerHTML = all_tasks_counter;
+                        document.getElementById("progressnumber").innerHTML = in_progress_counter;
+            document.getElementById("completednumber").innerHTML = completed_counter;
+            document.getElementById("archnumber").innerHTML = arch_counter;
+}
+         
+ $(function(){
+ 
+  $( '#datepicker' ).datepicker();
+ 
+ 
+});
+ 
+$(function() {
+    $( "#datepicker2" ).datepicker();
+  });
+ 
+ 
+</script>
+ 
+ 
+ 
+        <style>
+         
+         
+         #datepicker{
+   
+}
+             table#one td , td  {
+                 width : 100 % ;
+                 left-side : 100 % ;
+                 margin-right : 80% ;
+                 margin-top : 80% ;
+                 border : 1px solid black;
+                 border-collapse: collapse;
+                 table-layout:fixed;
+            }
+            td, td {
+                 padding: 45px;
+            }
+             
+ 
+ 
+             <style>
+    fieldset {
+      border: 0;
+    }
+    label {
+      display: block;
+      margin: 30px 0 0 0;
+    }
+    select {
+      width: 200px;
+    }
+    .overflow {
+      height: 200px;
+    }
+  </style>
+         
+         
+         
+        </style>
+ 
+ 
+    </head>
+     
+     
+    <body>
+    
+      <div class="container-fluid" style="background-color:#B28AB2" >
+  <h1 style="font-size:20px;"><strong>ToDoList</h1>
+  <div style="font-size:20px;"> <strong>helps you manage your time &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp; <form action = '/getout' method = "POST"><button  id="logout" name="choose action" value="Log Out"></form>  <label  style ="font-size : 20px; width:140px; " > Log out</label></div>
+  <div class="row">
+    <div class="col-sm-4" style="background-color:lavender; height : 1000px ;width:400px">
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                        <button id="Rbutton1" name="choose action" onclick="drawall()" value="(1) All Tasks"><label  style ="font-size : 20px;width:200px">  All Tasks </label><strong><p id="allnumber" style ="font-size : 20px;"></p></button>
+                            <br>
+                            <br>
+                     
+                        <button id="Rbutton2" name="choose action" onclick="drawprogress()" value="(2) In Progress"> <label  style ="font-size : 20px; width:200px ">  In Progress </label> <p id="progressnumber" style ="font-size : 20px;"></p></button>
+                            <br>
+                            <br>
+                        <button  id="Rbutton3" name="choose action" onclick="drawcompleted()" value="(3) Completed Tasks">  <label  style ="font-size : 20px;width:200px "> Completed Tasks </label> <p id="completednumber" style ="font-size : 20px;"></p></button>
+                            <br>
+                            <br>
+                        <button  id="Rbutton4" name="choose action" onclick="drawarch()" value="(4) Archived">  <label  style ="font-size : 20px; width:200px"> Archived</label><p id="archnumber" style ="font-size : 20px;"></p> </button>
+    </div>
+   
+    <div class="col-sm-8" style="background-color:lavenderblush; height : 1000px ; width : 1500px">
+   
+    <br><br>
+   
+ 
+<table id="page"></table>
+<br>
+<br>
+ 
+ 
+ 
+ 
+<div id="users-contain" class="ui-widget">
+  <h1 id="heading" style="font-size :20px"></h1>
+ 
+  <input type="button" id="Deleteall" style ="font-size : 20px; width:200px;  display:none;" value="Delete All" onclick="deleting()"> </input>
+   <input type="button" id="sortbyname" style ="font-size : 20px; width:200px" value=" Sort By Name " onclick="sortbyname()"> </input>
+  <input type="button" id="sortbydate" style ="font-size : 20px; width:200px" value=" Sort By Date " onclick="sortbydate()"> </input>
+  <table id="users" class="ui-widget ui-widget-content" style= "width:1250px ; font-size : 20px">
+    <thead>
+      <tr class="ui-widget-header ">
+        <th></th>
+        <th>ID</th>
+        <th>Task name</th>
+        <th>Date</th>
+        <th>options</th>
+      </tr>
+    </thead>
+    <tbody id="pagee" >
+     
+    </tbody>
+  </table>
+               
+ 
+<button id="addbutton" type="button" class="btn btn-default" onclick="show()" ; style = "background-color: #D96C77; font-size : 30px;">+ Add Task </button>
+ 
+<div id="dialog" class="container" style="display:none; font-size:20px">
+ 
+      <label for="task">Task</label>
+      <input type="text" name="task" id="task" >
+      <label for="date">Date</label>
+      <input type="text" name="date" id="datepicker" >
+      <label for="description">Description</label>
+        <textarea id="description" rows="4" cols="30" ></textarea>
+        <br><br>
+      <input id= "submit" style="display:inline;" onclick="add()" type="submit" value ="ADD TASK"></input>
+
+            <button id= "cancel" style="display:inline;" onclick="hide()" type="cancel">Cancel</button>
+ 
+ 
+</div>
+ 
+ <div id="dialog2" class="container" style="display:none; font-size:20px">
+ 
+      <label for="task2">Task</label>
+      <input type="text" name="task" id="task2" >
+      <label for="date2">Date</label>
+      <input type="text" name="date" id="datepicker2" >
+      <label for="description2">Description</label>
+        <textarea id="description2" rows="4" cols="30" ></textarea>
+        <br><br>
+      <input id= "submit2" style="display:inline;" onclick="edit()" type="submit" value ="EDIT TASK"></input>
+ 
+            <button id= "cancel2" style="display:inline;" onclick="hide2()" type="cancel">Cancel</button>
+ 
+</div>
+ 
+</div>
+   
+</div>
+  </div>
+</div>
+     
+    </body>
+    </html>

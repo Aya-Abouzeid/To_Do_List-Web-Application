@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+ 
+    <head>
+     <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+ 
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+  <script src="https://code.jquery.com/jquery-2.2.3.js"></script>
+ 
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.4/themes/smoothness/jquery-ui.css">
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+ 
+ 
+ <script>
+ 
+// var passid;
+// var uname;
+// var uemail;
+
+
+function signup() {
+ 
+if(formValidation())
+{
+  document.getElementById("password3").value="";
+  document.getElementById("name3").value="";
+  document.getElementById("email3").value="";
+  hide3();
+ 
+ 
+}
+ 
+ 
+}
+ 
+function show3(){
+       hide4();
+ 
+      document.getElementById("signupform").style.display = 'block'}
+      function show4(){
+       hide3();
+ 
+      document.getElementById("loginform").style.display = 'block'}
+ 
+      function hide3()
+{       document.getElementById("signupform").style.display = 'none';}
+ 
+function hide4()
+{       document.getElementById("loginform").style.display = 'none';}
+ </script>
+ <style>
+ 
+#dialog { font-size: 20px; width:300%;}
+#dialog h2 { font-size: larger; }
+#dialog div { font-size: 20px; }
+#dialog div.bigger { font-size: 150%; }
+ 
+#dialog2 { font-size: 20px; width:300%;}
+#dialog2 h2 { font-size: larger; }
+#dialog2 div { font-size: 20px; }
+#dialog2 div.bigger { font-size: 150%; }
+</style>
+ 
+<style>
+    body { font-size: 62.5%; }
+    label, input { display:block; }
+    input.text { margin-bottom:12px; width:95%; padding: .4em; }
+    fieldset { padding:0; border:0; margin-top:25px; }
+    h1 { font-size: 1.2em; margin: .6em 0; }
+    div#users-contain { width: 350px; margin: 20px 0; }
+    div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+    div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+    .ui-dialog .ui-state-error { padding: .3em; }
+    .validateTips { border: 1px solid transparent; padding: 0.3em; }
+    .dropdown{
+position: relative;
+display: inline-block;
+}
+ 
+ 
+ 
+ 
+<style>
+    fieldset {
+      border: 0;
+    }
+    label {
+      display: block;
+      margin: 30px 0 0 0;
+    }
+    select {
+      width: 200px;
+    }
+    .overflow {
+      height: 200px;
+    }
+ 
+ 
+    div.ui-widget #pagee tr td div.hoverDescription { display:none;}
+    div.ui-widget #pagee tr:hover td div.hoverDescription { display:inline-block;}
+  </style>
+ 
+ 
+ 
+        <style>
+         
+             table#one td , td  {
+                 width : 100 % ;
+                 left-side : 100 % ;
+                 margin-right : 80% ;
+                 margin-top : 80% ;
+                 border : 1px solid black;
+                 border-collapse: collapse;
+                 table-layout:fixed;
+            }
+            td, td {
+                 padding: 45px;
+            }
+             
+ 
+ 
+             <style>
+    fieldset {
+      border: 0;
+    }
+    label {
+      display: block;
+      margin: 30px 0 0 0;
+    }
+    select {
+      width: 200px;
+    }
+    .overflow {
+      height: 200px;
+    }
+ 
+    #background{
+     
+ 
+background-image: url("http://www.dumblittleman.com/wp-content/uploads/2014/04/Great-To-Do-List.jpg");
+ 
+ 
+    }
+  </style>
+         
+         
+         
+        </style>
+ 
+ 
+    </head>
+     
+     
+    <body>
+      <div class="container-fluid" style="background-color:#B28AB2" >
+  <h1 style="font-size:20px;"><strong>ToDoList</h1>
+  <p style="font-size:20px;"> <strong>helps you manage your time</p>
+  <div class="row">
+   
+    <div id="background" class="col-sm-8"  style="background-color:lavenderblush; height : 1000px ; width : 1730px " >
+   
+    <br><br>
+ 
+ 
+ 
+    <h1 style="text-align:center; font-size:800%;font-family:verdana; "> <b>2DO LIST</b> </h1>
+<p style="text-align:center; font-size:300%;font-family:verdana; ">&nbsp;&nbsp;&nbsp; <em> Organize your tasks&nbsp;&nbsp;&nbsp;&nbsp;& &nbsp;&nbsp;&nbsp;&nbsp;Accomplish more</em></p>
+<br><br><br><br><br><br><br><br><br>
+<br>
+<br>
+  <div>
+ <br><br><br><br><br>
+ <p style="font-size:350%;font-family:verdana; ">&emsp;&emsp;&emsp;&emsp;Sign up here for a new account :</p><br><br>
+ &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<button id="signupbtn" onclick="show3()" type="button" class="btn btn-default" ; style = "background-color: #D96C77; font-size : 30px;"> signup</button>
+ <div id="signupform" class="container" style="display:none; font-size:20px">
+ <form action="http://localhost:8081/addUser" method = "POST">
+  <label for="name">Name</label>
+      <input type="text"  pattern="^[a-z0-9_-]{3,16}$"title = "letters/numbers/-/_ from 3 to 16 characters " required name="name3" id="name3" >
+      <!-- pattern="" -->
+      <label for="email">Email</label>
+      <input type="email"  pattern= "^([a-z0-9_\.-]+)@([\da-z\.-]+){2,6}\.([a-z\.]{2,4})$" required name="email3" id="email3" >
+      <label for="password">Password</label>
+      <input type="password" pattern="^[a-z0-9_-]{6,18}$" title = "letters/numbers/-/_ from 6 to 18 characters"required  name="password3" id="password3" >
+ <br>
+    <input id= "signup" style="display:inline;"  type="submit" value ="Sign Up"></input></form>
+ 
+            <button id= "cancel3" style="display:inline;" onclick="hide3()" type="cancel">Cancel</button>
+ 
+ 
+</div>
+<br><br><br><br>
+<p style="font-size:350%;font-family:verdana; ">&emsp;&emsp;&emsp;&emsp; Or Login with your account :</p><br><br>
+ &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<button id="loginbtn" onclick="show4()" type="button" class="btn btn-default" style = "background-color: #D96C77; font-size : 30px;"> Login </button>
+ 
+ 
+<div id="loginform" class="container" style="display:none; font-size:20px">
+  <form action="http://localhost:8081/toDoList" method="post">
+ 
+      <label for="email">Email</label>
+      <input  type="text" pattern= "^([a-z0-9_\.-]+)@([\da-z\.-]+){2,6}\.([a-z\.]{2,4})$"required name="email4" id="email4" >
+      <label for="password"  id="passid" >Password</label>
+      <input type="password"pattern="^[a-z0-9_-]{6,18}$" title = "letters/numbers/-/_ from 6 to 18 characters" required name="password4" id="password4" >
+<br>
+ 
+      <input id= "login" style="display:inline;"  type="submit" value ="Login"></input>
+       </form>
+            <button id= "cancel4" style="display:inline;" onclick="hide4()" type="cancel">Cancel</button>
+</div>
+ 
+   </div>
+ 
+  </div>
+</div>
+     
+    </body>
+    </html>
